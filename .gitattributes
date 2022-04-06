@@ -1,0 +1,12 @@
+### https://help.github.com/en/github/using-git/configuring-git-to-handle-line-endings
+
+# Declare files that will always have LF line endings on checkout.
+* text eol=lf
+
+# Denote all files that are truly binary and should not be modified.
+*.eot binary
+*.ico binary
+*.jpg binary
+*.png binary
+*.ttf binary
+*.woff binary
