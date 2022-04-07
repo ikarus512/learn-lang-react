@@ -38,7 +38,7 @@ const Bus: FunctionComponent<any> = (route: RouteProps<any, any>): JSX.Element =
 const Cart: FunctionComponent<any> = (route: RouteProps<any, any>): JSX.Element => <h3>Cart</h3>;
 
 // function Tacos({ routes: MyRoutesType }) {
-  const Tacos: FunctionComponent<any> = (route: RouteProps<any, any>): JSX.Element =>
+const Tacos: FunctionComponent<any> = (): JSX.Element =>
   <div>
     <h2>Tacos</h2>
     <ul>
@@ -68,7 +68,7 @@ const Cart: FunctionComponent<any> = (route: RouteProps<any, any>): JSX.Element 
 type MyRouteType = {
   path: string;
   component: FunctionComponent<any>;
-  routes?: MyRoutesType;
+  children?: Array<MyRouteType>;
 }
 type MyRoutesType = Array<MyRouteType>;
 const routes: MyRoutesType = Array(
@@ -79,7 +79,7 @@ const routes: MyRoutesType = Array(
   {
     path: '/tacos',
     component: Tacos as FunctionComponent<any>,
-    routes: [
+    children: [
       {
         path: '/tacos/bus',
         component: Bus as FunctionComponent<any>,
@@ -120,10 +120,31 @@ export default function App() {
 // prop to the component it renders.
 const RouteWithSubRoutes: FunctionComponent<any> = (route: RouteProps<any, any>): JSX.Element =>
     <Route
-      path={route.path || ''}
-      render={(props: RouteProps<any, any>) => (
-        // pass the sub-routes down to keep nesting
-        <route.component {...props} routes={route.routes} />
-        // <div />
-      )}
+        path={route.path || ''}
+        render={(props: RouteProps<any, any>) => {
+            console.log('### ', route.path, route.component);
+            debugger
+
+            // TODO: here is infinite loop
+            let Comp : FunctionComponent<any> = route.component as FunctionComponent<any>;
+            // return <Comp {...props} routes={route.children} />;
+            return <Comp {...props} path={route.path} routes={route.children} />;
+
+            // // TODO: trying to fix infinite loop
+            // if (route.children) {
+            //     // Here if children
+            //     let ch : Array<MyRouteType> = route.children as Array<MyRouteType>;
+            //     return (<>
+            //         {ch.map((SubElem : MyRouteType, i : number) => {
+            //             let SubComp : FunctionComponent<any> = SubElem.component as FunctionComponent<any>;
+            //             return (
+            //                 <SubComp key={i} path={route.path} {...props} />
+            //             );
+            //         })}
+            //     </>);
+            // }
+            // // Here if no children
+            // let Comp : FunctionComponent<any> = route.component as FunctionComponent<any>;
+            // return <Comp {...props} />;
+        }}
     />;
